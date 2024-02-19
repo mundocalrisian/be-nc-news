@@ -52,4 +52,37 @@ describe('APP', () => {
             })
         });
     });
+    describe('GET /api/articles/:article_id', () => {
+        test('should repsond with a status 200 and an object with the appropriate keys', () => {
+            return request(app)
+            .get('/api/articles/3')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.article).toHaveProperty('author', expect.any(String))
+                expect(response.body.article).toHaveProperty('title', expect.any(String))
+                expect(response.body.article).toHaveProperty('article_id', expect.any(Number))
+                expect(response.body.article).toHaveProperty('body', expect.any(String))
+                expect(response.body.article).toHaveProperty('topic', expect.any(String))
+                expect(response.body.article).toHaveProperty('created_at', expect.any(String))
+                expect(response.body.article).toHaveProperty('votes', expect.any(Number))
+                expect(response.body.article).toHaveProperty('article_img_url', expect.any(String))
+        })
+    });
+        test('should repsond with a 404 status when a valid but non-existent id is requested', () => {
+            return request(app)
+            .get('/api/articles/99999')
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe('article does not exist')
+            })
+        });
+        test('should repsond with a 400 status when an invalid endpoint is requested', () => {
+            return request(app)
+            .get('/api/articles/not_an_article')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad request')
+            })
+        });
+    });
 });
