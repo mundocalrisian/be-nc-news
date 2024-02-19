@@ -1,5 +1,5 @@
 const { response } = require('../app.js')
-const {selectAllTopics, selectEndpoints} = require('../models/app.model.js')    
+const {selectAllTopics, selectEndpoints, selectArticleById} = require('../models/app.model.js')    
 
 function returnHealthcheck(request, response){
     response.status(200).send({msg: 'Healthcheck ok'})
@@ -21,4 +21,13 @@ function returnAllTopics(request, response, next){
     .catch(next)
 }
 
-module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics}
+function returnArticleById(request, response, next){
+    const articleId = request.params.article_id
+    selectArticleById(articleId)
+    .then((articleObj) => {
+        response.status(200).send({article: articleObj})
+    })
+    .catch(next)
+}
+
+module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById}
