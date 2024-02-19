@@ -33,6 +33,23 @@ describe('APP', () => {
                 })
             })
         });
-        
+    });
+    describe('GET /api', () => {
+        test('should return an object with all available endpoints and a description, query and example', () => {
+            return request(app)
+            .get('/api')
+            .expect(200)
+            .then((response) => {
+                const endpointsObj = response.body.endpoints
+                expect(endpointsObj).toHaveProperty('GET /api', expect.any(Object))
+                expect(endpointsObj).toHaveProperty('GET /api/topics', expect.any(Object))
+                expect(endpointsObj).toHaveProperty('GET /api/articles', expect.any(Object))
+                for (const endpoint in endpointsObj) {
+                    expect(endpointsObj[endpoint]).toHaveProperty('description', expect.any(String))
+                    expect(endpointsObj[endpoint]).toHaveProperty('queries', expect.any(Array))
+                    expect(endpointsObj[endpoint]).toHaveProperty('exampleResponse', expect.any(Object))
+                }
+            })
+        });
     });
 });
