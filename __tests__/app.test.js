@@ -60,7 +60,7 @@ describe('APP', () => {
             .then((response) => {
                 expect(response.body.article).toHaveProperty('author', expect.any(String))
                 expect(response.body.article).toHaveProperty('title', expect.any(String))
-                expect(response.body.article).toHaveProperty('article_id', expect.any(Number))
+                expect(response.body.article).toHaveProperty('article_id', 3)
                 expect(response.body.article).toHaveProperty('body', expect.any(String))
                 expect(response.body.article).toHaveProperty('topic', expect.any(String))
                 expect(response.body.article).toHaveProperty('created_at', expect.any(String))
@@ -82,6 +82,33 @@ describe('APP', () => {
             .expect(400)
             .then((response) => {
                 expect(response.body.msg).toBe('Bad request')
+            })
+        });
+    });
+    describe('GET /api/articles', () => {
+        test('should respond with a 200 status and an array of article objects with the appropriate keys', () => {
+            return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then((response) => {
+                expect(response.body).toHaveProperty('articles')
+                const articlesArray = response.body.articles
+                expect(articlesArray.length).toBe(13)
+                articlesArray.forEach((article) => {
+                    const expectedArticle = {
+                        'author': expect.any(String),
+                        'title': expect.any(String),
+                        'article_id': expect.any(Number),
+                        'topic': expect.any(String),
+                        'created_at': expect.any(String),
+                        'votes': expect.any(Number),
+                        'article_img_url': expect.any(String),
+                        'comment_count': expect.any(Number)
+                    }
+                    expect(article).toMatchObject(expectedArticle)
+                    expect(article).not.toHaveProperty('body')
+                })
+                expect(articlesArray).toBeSortedBy('created_at', {descending: true})
             })
         });
     });

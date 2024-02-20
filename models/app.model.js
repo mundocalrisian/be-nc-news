@@ -1,5 +1,6 @@
 const db = require('../db/connection.js')
 const fs = require('fs/promises')
+const articles = require('../db/data/test-data/articles.js')
 
 function selectEndpoints(){
     return fs.readFile(`${__dirname}/../endpoints.json`, 'utf-8')
@@ -22,4 +23,24 @@ function selectArticleById(articleId){
         return result.rows[0]})
 }
 
-module.exports = {selectAllTopics, selectEndpoints, selectArticleById}
+function selectAllArticles(){
+    return db.query(`
+    SELECT articles.article_id, articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, 
+    COUNT(comments.article_id) AS comment_count
+    FROM comments
+    RIGHT JOIN articles 
+    ON comments.article_id = articles.article_id 
+    GROUP BY articles.article_id
+    ORDER BY articles.created_at DESC;
+    `)
+    .then((allArticles) => {
+        allArticles.rows.forEach((article) => {
+            article.comment_count = Number(article.comment_count)
+            
+            
+        })
+        return allArticles.rows
+    })
+}
+
+module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles}
