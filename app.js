@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles} = require('./controllers/app.controller.js')
+const {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId} = require('./controllers/app.controller.js')
 
 app.get('/api/healthcheck', returnHealthcheck)
 
@@ -11,6 +11,8 @@ app.get('/api/topics', returnAllTopics)
 app.get('/api/articles/:article_id', returnArticleById)
 
 app.get('/api/articles', returnAllArticles)
+
+app.get('/api/articles/:article_id/comments', returnCommentsByArticleId)
 
 app.use((err, request, response, next) => {
     switch (err.code) {

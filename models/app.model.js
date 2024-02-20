@@ -36,11 +36,23 @@ function selectAllArticles(){
     .then((allArticles) => {
         allArticles.rows.forEach((article) => {
             article.comment_count = Number(article.comment_count)
-            
-            
         })
         return allArticles.rows
     })
 }
 
-module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles}
+function selectCommentsByArticleId(articleId){
+    return db.query(`
+    SELECT *
+    FROM comments
+    JOIN articles
+    ON comments.article_id = articles.article_id
+    WHERE comments.article_id = $1
+    ORDER BY comments.created_at DESC;
+    `, [articleId])
+    .then((comments) => {
+        return comments.rows
+    })
+}
+
+module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId}

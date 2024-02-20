@@ -108,8 +108,71 @@ describe('APP', () => {
                     expect(article).toMatchObject(expectedArticle)
                     expect(article).not.toHaveProperty('body')
                 })
-                expect(articlesArray).toBeSortedBy('created_at', {descending: true})
             })
         });
+        test('articles in the array should be sorted by date created in descending order ', () => {
+            return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articles).toBeSortedBy('created_at', {descending: true})
+        });
     });
-});
+    });
+    describe('GET /api/articles/:article_id/comments', () => {
+        test('should repsond with a status 200 and an array of comments with the appropriate keys', () => {
+            return request(app)
+            .get("/api/articles/3/comments")
+            .expect(200)
+            .then((response) => {
+                expect(response.body).toHaveProperty('comments')
+                const commentsArray = response.body.comments
+                expect(commentsArray).toHaveLength(2)
+                commentsArray.forEach((comment) => {
+                    const expectedComment = {
+                        'comment_id': expect.any(Number),
+                        'votes': expect.any(Number),
+                        'created_at': expect.any(String),
+                        'author': expect.any(String),
+                        'body': expect.any(String),
+                        'article_id': expect.any(Number)
+                    }
+                expect(comment).toMatchObject(expectedComment)
+                })
+            })
+        })
+        test('the array of comments should be sorted by date created in descending order', () => {
+            return request(app)
+            .get('/api/articles/3/comments')
+            .then((response) => {
+                expect(response.body.comments).toBeSortedBy('created_at', {descending: true})
+            })
+        })
+        test('should respond with a 404 status when a valid but non-existent id is supplied', () => {
+           return request(app)
+            .get('/api/articles/99999/comments')
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe('article does not exist')
+            })
+        });
+        test('should respond with a 400 status when an invalid endpoint is supplied ', () => {
+            return request(app)
+            .get('/api/articles/not_a_number/comments')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad request')
+            })
+        });
+        test('should return a 200 status, message and an empty array when a valid article id is passed but has no comments assosciated', () => {
+            return request(app)
+            .get('/api/articles/2/comments')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.msg).toBe('No comments associated')
+                expect(response.body.comments).toEqual([])
+                expect(response.body.comments).toHaveLength(0)
+            })
+        });
+    })
+})
