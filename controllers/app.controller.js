@@ -1,5 +1,5 @@
 const { response } = require('../app.js')
-const {selectAllTopics, selectEndpoints, selectArticleById} = require('../models/app.model.js')    
+const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles} = require('../models/app.model.js')    
 
 function returnHealthcheck(request, response){
     response.status(200).send({msg: 'Healthcheck ok'})
@@ -30,4 +30,13 @@ function returnArticleById(request, response, next){
     .catch(next)
 }
 
-module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById}
+function returnAllArticles(request, response, next){
+    selectAllArticles()
+    .then((allComments) => {
+        // console.log(allComments, "---- all comments");
+        response.status(200).send({articles: allComments})
+    })
+    .catch(next)
+}
+
+module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles}
