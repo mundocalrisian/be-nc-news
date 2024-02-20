@@ -1,5 +1,5 @@
 const { response } = require('../app.js')
-const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles} = require('../models/app.model.js')    
+const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId} = require('../models/app.model.js')    
 
 function returnHealthcheck(request, response){
     response.status(200).send({msg: 'Healthcheck ok'})
@@ -33,10 +33,26 @@ function returnArticleById(request, response, next){
 function returnAllArticles(request, response, next){
     selectAllArticles()
     .then((allComments) => {
-        // console.log(allComments, "---- all comments");
         response.status(200).send({articles: allComments})
     })
     .catch(next)
 }
 
-module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles}
+function returnCommentsByArticleId(request, response, next){
+    const articleId = request.params.article_id
+    const promises = [
+        selectCommentsByArticleId(articleId), 
+        selectArticleById(articleId)
+    ]
+
+    Promise.all(promises).then((resolutions) => {
+        if (resolutions[0].length === 0) {
+            response.status(200).send({msg: 'No comments associated', comments: resolutions[0]})
+        } else {
+            response.status(200).send({comments: resolutions[0]})
+        }
+    })
+    .catch(next)
+}
+
+module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId}
