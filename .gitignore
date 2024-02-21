@@ -1,9 +1,5 @@
 node_modules
 .env.*
-view-dbs.sql
-view-dbs.txt
-test-sql.sql
-test-sql.txt
-test2-sql.txt
+sql_files
 /__tests__/model.test.js
 

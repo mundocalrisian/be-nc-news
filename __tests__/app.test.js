@@ -175,4 +175,98 @@ describe('APP', () => {
             })
         });
     })
+    describe('POST /api/articles/:article_id/comments', () => {
+        test('should insert a new comment and return a 201 status, along with an object of the new comment', () => {
+            const newComment = {
+                author: 'icellusedkars',
+                body: 'We will see about that!'
+            }
+            return request(app)
+            .post('/api/articles/13/comments')
+            .send(newComment)
+            .expect(201)
+            .then((response) => {
+                const expectedResponse = {
+                    body: 'We will see about that!',
+                    article_id: 13,
+                    author: 'icellusedkars',
+                }
+                expect(response.body.postedComment).toMatchObject(expectedResponse)
+
+            })
+        });
+        test('should add comment_id, votes and created_at fields to the repsonse', () => {
+            const newComment ={
+                author: 'icellusedkars',
+                body: 'We will see about that!'
+            }
+            return request(app)
+            .post('/api/articles/13/comments')
+            .send(newComment)
+            .expect(201)
+            .then((response) => {
+                const expectedResponse = {
+                    comment_id: expect.any(Number),
+                    body: 'We will see about that!',
+                    article_id: 13,
+                    author: 'icellusedkars',
+                    votes: 0,
+                    created_at: expect.any(String)
+                }
+                expect(response.body.postedComment).toMatchObject(expectedResponse)
+            })
+        });
+        test('should return a 400 status and message when an article_id that is valid but does not exist is supplied', () => {
+            const newComment = {
+                author: 'icellusedkars',
+                body: 'We will see about that!'
+            }
+            return request(app)
+            .post('/api/articles/9999/comments')
+            .send(newComment)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad request')
+            })
+        });
+        test('should return a 400 status and message when an invalid user is supplied ', () => {
+            const newComment = {
+                author: 'not_a_valid_user',
+                body: 'We will see about that!'
+            }
+            return request(app)
+            .post('/api/articles/13/comments')
+            .send(newComment)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad request')
+            })
+        });
+        test('should return a 400 status and message when a required field is not supplied', () => {
+            const newComment = {
+                author: 'icellusedkars'
+            }
+            return request(app)
+            .post('/api/articles/13/comments')
+            .send(newComment)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad request')
+            })
+        });
+        test('should return a 400 status and message if an object with additional keys is supplied', () => {
+            const newComment = {
+                author: 'icellusedkars',
+                body: 'We will see about that!',
+                not_valid: "Not valid"
+            }
+            return request(app)
+            .post('/api/articles/13/comments')
+            .send(newComment)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad request')
+            })
+        });
+    });
 })

@@ -1,5 +1,4 @@
-const { response } = require('../app.js')
-const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId} = require('../models/app.model.js')    
+const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment} = require('../models/app.model.js')    
 
 function returnHealthcheck(request, response){
     response.status(200).send({msg: 'Healthcheck ok'})
@@ -55,4 +54,23 @@ function returnCommentsByArticleId(request, response, next){
     .catch(next)
 }
 
-module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId}
+function postCommentByArticleId(request, response, next){
+    const articleId = request.params.article_id
+    const newComment = request.body
+    // console.log(newComment);
+    if (Object.keys(newComment).length !== 2){
+        return response.status(400).send({msg: 'Bad request'})
+    }
+    
+    insertNewComment(articleId, newComment)
+    .then((newComment) => {
+        response.status(201).send({postedComment: newComment[0]})
+    })
+    .catch((err) => {
+        // console.log(err)
+        next(err);
+    })
+
+}
+
+module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId}

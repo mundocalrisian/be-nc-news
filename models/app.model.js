@@ -1,6 +1,5 @@
 const db = require('../db/connection.js')
 const fs = require('fs/promises')
-const articles = require('../db/data/test-data/articles.js')
 
 function selectEndpoints(){
     return fs.readFile(`${__dirname}/../endpoints.json`, 'utf-8')
@@ -55,4 +54,19 @@ function selectCommentsByArticleId(articleId){
     })
 }
 
-module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId}
+function insertNewComment(articleId, newComment){
+    // console.log(articleId);
+    // console.log(newComment);
+    return db.query(`
+    INSERT INTO comments (article_id, author, body)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+    `, [articleId, newComment.author, newComment.body])
+    .then((result) => {
+        // console.log(result.rows);
+        return result.rows
+    })
+
+}
+
+module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment}
