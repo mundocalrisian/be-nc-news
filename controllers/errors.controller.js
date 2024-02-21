@@ -3,6 +3,12 @@ function handlePsqlErrors(err, request, response, next){
         case '22P02':
         response.status(400).send({msg: 'Bad request'});
         break;
+        case '23502':
+        response.status(400).send({msg: 'Bad request'});
+        break;
+        case '23503':
+        response.status(400).send({msg: 'Bad request'});
+        break;
         default:
             next(err)
     }
