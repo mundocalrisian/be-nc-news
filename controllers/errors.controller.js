@@ -1,3 +1,7 @@
+function handleInvalidEndpoint(request, response, next){
+    response.status(404).send({msg: 'Path not found'})
+}
+
 function handlePsqlErrors(err, request, response, next){
     switch (err.code) {
         case '22P02':
@@ -7,7 +11,7 @@ function handlePsqlErrors(err, request, response, next){
         response.status(400).send({msg: 'Bad request'});
         break;
         case '23503':
-        response.status(400).send({msg: 'Bad request'});
+        response.status(404).send({msg: 'does not exist'});
         break;
         default:
             next(err)
@@ -27,4 +31,4 @@ function handle500Errors (err, request, response, next){
     response.status(500).send({msg: 'Internal Server Error'})
 }
 
-module.exports = {handlePsqlErrors, handleCustomErrors, handle500Errors}
+module.exports = {handleInvalidEndpoint, handlePsqlErrors, handleCustomErrors, handle500Errors}

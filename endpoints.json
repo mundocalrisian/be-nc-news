@@ -72,6 +72,10 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description": "posts a new comment and serves an object of the comment",
+    "exampleBody": {
+      "author": "icellusedkars",
+      "body": "We will see about that!"
+    },
     "queries": [],
     "exampleResponse": {
       "comment": {
@@ -81,6 +85,25 @@
         "author": "icellusedkars",
         "votes": 0,
         "created_at": "2024-02-21T09:00:39.153Z"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "increases the votes assosciated with the requsted id and serves an object of the updated article",
+    "exampleBody": {
+      "inc_votes": 5
+    },
+    "queries": [],
+    "exampleResponse": {
+      "updated_article": {
+        "article_id" : 3,
+        "title": "Eight pug gifs that remind me of mitch",
+        "topic": "mitch",
+        "author": "icellusedkars",
+        "body": "some gifs",
+        "created_at": "2020-11-03T09:12:00.000Z",
+        "votes": 5,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700" 
       }
     }
   }

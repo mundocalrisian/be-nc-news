@@ -1,4 +1,4 @@
-const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment} = require('../models/app.model.js')    
+const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId} = require('../models/app.model.js')    
 
 function returnHealthcheck(request, response){
     response.status(200).send({msg: 'Healthcheck ok'})
@@ -57,7 +57,6 @@ function returnCommentsByArticleId(request, response, next){
 function postCommentByArticleId(request, response, next){
     const articleId = request.params.article_id
     const newComment = request.body
-    // console.log(newComment);
     if (Object.keys(newComment).length !== 2){
         return response.status(400).send({msg: 'Bad request'})
     }
@@ -66,11 +65,23 @@ function postCommentByArticleId(request, response, next){
     .then((newComment) => {
         response.status(201).send({postedComment: newComment[0]})
     })
-    .catch((err) => {
-        // console.log(err)
-        next(err);
-    })
-
+    .catch(next);
 }
 
-module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId}
+function patchArticleByArticleId(request, response, next){
+    const articleId = request.params.article_id
+    const incVotes = request.body.inc_votes
+    
+    if (Object.keys(request.body).length !== 1){
+        return response.status(400).send({msg: 'Bad request'})
+    }
+    updateArticleByArticleId(articleId, incVotes)
+    .then((updatedArticle) => {
+        response.status(200).send({updated_article: updatedArticle})
+    })
+    .catch(next)
+
+    
+}
+
+module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId}
