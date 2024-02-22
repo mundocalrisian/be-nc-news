@@ -7,13 +7,21 @@ function selectAllComments(){
     })
 }
 
-function selectCommentsByArticleId(articleId){
+function deleteFromCommentId(commentId){
     return db.query(`
-    SELECT * FROM comments
-    WHERE comments.article_id = ${articleId}`)
-    .then((results) => {
-        return results.rows
+    DELETE FROM comments
+    WHERE comment_id = $1
+    RETURNING *
+    `, [commentId])
+    .then((result) => {
+        if (result.rows.length === 0) {
+            return Promise.reject({status: 404, msg: 'comment does not exist'})
+        }
+        return result.rows
     })
 }
 
-module.exports = {selectAllComments, selectCommentsByArticleId}
+
+
+
+module.exports = {selectAllComments, deleteFromCommentId}

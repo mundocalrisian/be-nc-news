@@ -1,4 +1,5 @@
-const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId} = require('../models/app.model.js')    
+const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId} = require('../models/app.model.js')
+const {selectAllComments, deleteFromCommentId} = require('../models/comments.model.js')
 
 function returnHealthcheck(request, response){
     response.status(200).send({msg: 'Healthcheck ok'})
@@ -84,4 +85,15 @@ function patchArticleByArticleId(request, response, next){
     
 }
 
-module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId}
+function deleteCommentByCommentId(request, response, next){
+    const commentId = request.params.comment_id
+    
+    deleteFromCommentId(commentId)
+    .then((deletedComment) => {
+        response.status(204).send()
+    })
+    .catch(next)
+}
+
+
+module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId, deleteCommentByCommentId}
