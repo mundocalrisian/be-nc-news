@@ -1,3 +1,4 @@
+const { topicData } = require('../db/data/test-data/index.js')
 const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId} = require('../models/app.model.js')
 const {selectAllComments, deleteFromCommentId} = require('../models/comments.model.js')
 const {selectAllUsers} = require('../models/users.model.js')
@@ -30,19 +31,20 @@ function returnAllUsers(request, response, next){
     .catch(next)
 }
 
+function returnAllArticles(request, response, next){
+    const topicQuery = request.query
+    selectAllArticles(topicQuery)
+    .then((allComments) => {
+        response.status(200).send({articles: allComments})
+    })
+    .catch(next)
+}
+
 function returnArticleById(request, response, next){
     const articleId = request.params.article_id
     selectArticleById(articleId)
     .then((articleObj) => {
         response.status(200).send({article: articleObj})
-    })
-    .catch(next)
-}
-
-function returnAllArticles(request, response, next){
-    selectAllArticles()
-    .then((allComments) => {
-        response.status(200).send({articles: allComments})
     })
     .catch(next)
 }

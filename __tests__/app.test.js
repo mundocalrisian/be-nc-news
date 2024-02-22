@@ -88,6 +88,7 @@ describe('APP', () => {
             .get("/api/articles")
             .expect(200)
             .then((response) => {
+                // console.log(response.body, "----in test");
                 expect(response.body).toHaveProperty('articles')
                 const articlesArray = response.body.articles
                 expect(articlesArray.length).toBe(13)
@@ -114,8 +115,29 @@ describe('APP', () => {
             .then((response) => {
                 expect(response.body.articles).toBeSortedBy('created_at', {descending: true})
         });
+        });
+        test('should accept a topic query that returns only the articles for the given topic', () => {
+            return request(app)
+            .get('/api/articles?topic=cats')
+            .expect(200)
+            .then((response) => {
+                const articles = response.body.articles
+                expect(articles).toHaveLength(1)
+                articles.forEach((article) => {
+                    expect(article.topic).toBe('cats')
+                })
+            })
+        });
+        test('should repsond with a 400 error when an invalid query is supplied', () => {
+            return request(app)
+            .get('/api/articles?not_a_query')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('bad request')
+            })
+        });
     });
-    });
+    
     describe('GET /api/articles/:article_id', () => {
         test('should repsond with a status 200 and an object with the appropriate keys', () => {
             return request(app)

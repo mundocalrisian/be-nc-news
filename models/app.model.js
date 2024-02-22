@@ -1,3 +1,4 @@
+const { log } = require('console')
 const db = require('../db/connection.js')
 const fs = require('fs/promises')
 
@@ -13,6 +14,43 @@ function selectAllTopics(){
         .then((results) => results.rows)
 }
 
+function selectAllArticles(topicQuery){
+
+    const topicQueryKey = Object.keys(topicQuery)
+    
+    const validQueries = ['topic']
+
+    if (!validQueries.includes(topicQueryKey[0]) && topicQueryKey.length !== 0){
+        return Promise.reject({status: 400, msg: 'bad request'})
+    }
+    
+    const queryValues = []
+    let sqlStr = `
+    SELECT articles.article_id, articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, 
+    COUNT(comments.article_id) AS comment_count
+    FROM comments
+    RIGHT JOIN articles 
+    ON comments.article_id = articles.article_id `
+
+    if(topicQueryKey[0] !== undefined) {
+        sqlStr += ` 
+    WHERE topic = $1`
+        queryValues.push(topicQuery[topicQueryKey[0]])
+    }
+
+    sqlStr += ` 
+    GROUP BY articles.article_id
+    ORDER BY articles.created_at DESC;`
+    
+    return db.query(sqlStr, queryValues)
+    .then((allArticles) => {
+        allArticles.rows.forEach((article) => {
+            article.comment_count = Number(article.comment_count)
+        })
+        return allArticles.rows
+    })
+}
+
 function selectArticleById(articleId){
     return db.query(`
     SELECT * FROM articles
@@ -20,24 +58,6 @@ function selectArticleById(articleId){
     .then((result) => {
         if (result.rows.length === 0) return Promise.reject({status: 404, msg: 'article does not exist'})
         return result.rows[0]})
-}
-
-function selectAllArticles(){
-    return db.query(`
-    SELECT articles.article_id, articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, 
-    COUNT(comments.article_id) AS comment_count
-    FROM comments
-    RIGHT JOIN articles 
-    ON comments.article_id = articles.article_id 
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC;
-    `)
-    .then((allArticles) => {
-        allArticles.rows.forEach((article) => {
-            article.comment_count = Number(article.comment_count)
-        })
-        return allArticles.rows
-    })
 }
 
 function selectCommentsByArticleId(articleId){
