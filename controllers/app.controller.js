@@ -32,22 +32,31 @@ function returnAllUsers(request, response, next){
 }
 
 function returnAllArticles(request, response, next){
-    const topic = request.query.topic
-    const promises = [selectAllArticles(topic)]
-    if (topic) promises.push(checkTopic(topic))
+    const queryKey = Object.keys(request.query)
+    const toCheck = queryKey[0]
+
+    switch (toCheck) {
+        case undefined:
+            selectAllArticles().then((result) => {
+                response.status(200).send({articles: result})
+            })
+            break;
+        case 'topic':
+            const topic = request.query.topic
+            const promises = [selectAllArticles(topic), checkTopic(topic)]
+            Promise.all(promises).then((resolutions) => {
+                    if (resolutions[1].length === 0){   
+                        response.status(400).send({msg: 'bad request'})
+                    } else {
+                        response.status(200).send({articles: resolutions[0]})
+                    }
+                })
+            break;
+        default:
+            response.status(400).send({msg: 'bad request'})
+            break;
+    }
     
-    Promise.all(promises).then((resolutions) => {
-        if (!resolutions[1]){
-            response.status(200).send({articles: resolutions[0]})
-        } else {
-            if (resolutions[1].length === 0){   
-                response.status(400).send({msg: 'bad request'})
-            } else {
-                response.status(200).send({articles: resolutions[0]})
-            }
-        }
-    })
-    .catch(next)
 }
 
 function returnArticleById(request, response, next){

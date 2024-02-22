@@ -41,9 +41,6 @@ function selectAllArticles(topic){
     
     return db.query(sqlStr, queryValues)
     .then((allArticles) => {
-        // if (allArticles.rows.length === 0){
-        //     return Promise.reject({status: 400, msg: 'bad request'})
-        // }
         allArticles.rows.forEach((article) => {
             article.comment_count = Number(article.comment_count)
         })

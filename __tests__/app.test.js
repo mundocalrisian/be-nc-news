@@ -128,7 +128,15 @@ describe('APP', () => {
                 })
             })
         });
-        test('should return a 400 error when an invalid query value is supplied', () => {
+        test('should return a 200 status and empty array when a valid topic query value is passed but has no articles assosciated to it', () => {
+            return request(app)
+            .get('/api/articles?topic=paper')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articles).toEqual([])
+            })
+        });
+        test('should return a 400 error when an invalid topic query value is supplied', () => {
             return request(app)
             .get('/api/articles?topic=not_a_query')
             .expect(400)
@@ -136,12 +144,12 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('bad request')
             })
         });
-        test('should return a 200 status and empty array when a valid topic is passed but has no articles assosciated to it', () => {
+        test('should return a 400 error when an invalid topic query value is supplied', () => {
             return request(app)
-            .get('/api/articles?topic=paper')
-            .expect(200)
+            .get('/api/articles?not_a_query=not_a_value')
+            .expect(400)
             .then((response) => {
-                expect(response.body.articles).toEqual([])
+                expect(response.body.msg).toBe('bad request')
             })
         });
     });
