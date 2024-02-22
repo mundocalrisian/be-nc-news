@@ -365,4 +365,27 @@ describe('APP', () => {
             })
         });
     });
+    describe('DELETE /api/comments/:comment_id', () => {
+        test('should respond with a 204 status and delete the comment with requested id', () => {
+            return request(app)
+            .delete('/api/comments/7')
+            .expect(204)
+        });
+        test('should repsond with a 404 status when a valid but non-existent id is requested', () => {
+            return request(app)
+            .delete('/api/comments/99999')
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe('comment does not exist')
+            })
+        });
+        test('should repsond with a 400 status when an invalid endpoint is requested', () => {
+            return request(app)
+            .delete('/api/comments/not_a_number')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad request')
+            }) 
+        });
+    });
 })
