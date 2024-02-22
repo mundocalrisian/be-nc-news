@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId, deleteCommentByCommentId} = require('./controllers/app.controller.js')
+const {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId, deleteCommentByCommentId, returnAllUsers} = require('./controllers/app.controller.js')
 const {handleInvalidEndpoint, handlePsqlErrors, handleCustomErrors, handle500Errors} = require('./controllers/errors.controller.js')
 
 app.use(express.json());
@@ -10,6 +10,8 @@ app.get('/api/healthcheck', returnHealthcheck)
 app.get('/api', returnAllEndpoints)
 
 app.get('/api/topics', returnAllTopics)
+
+app.get('/api/users', returnAllUsers)
 
 app.get('/api/articles/:article_id', returnArticleById)
 
