@@ -9,7 +9,7 @@ afterAll(() => db.end)
 
 describe('APP', () => {
     describe('GET /api/healthcheck', () => {
-        test('should respond with a 200 status and a message confirming functionality', () => {
+        test('should return a 200 status and a message confirming functionality', () => {
             return request(app)
             .get('/api/healthcheck')
             .expect(200)
@@ -47,7 +47,7 @@ describe('APP', () => {
         });
     });
     describe('GET /api/topics', () => {
-        test('should repsond with a 200 status', () => {
+        test('should return a 200 status with an array of all topics', () => {
             return request(app)
             .get('/api/topics')
             .expect(200)
@@ -63,7 +63,7 @@ describe('APP', () => {
         });
     });
     describe('GET /api/users', () => {
-        test('should respond with a 200 status and an array of user objects with the appropriate keys', () => {
+        test('should return a 200 status and an array of user objects with the appropriate keys', () => {
             return request(app)
             .get('/api/users')
             .expect(200)
@@ -83,7 +83,7 @@ describe('APP', () => {
         });
     });
     describe('GET /api/articles', () => {
-        test('should respond with a 200 status and an array of article objects with the appropriate keys', () => {
+        test('should return a 200 status and an array of article objects with the appropriate keys', () => {
             return request(app)
             .get("/api/articles")
             .expect(200)
@@ -128,18 +128,25 @@ describe('APP', () => {
                 })
             })
         });
-        test('should repsond with a 400 error when an invalid query is supplied', () => {
+        test('should return a 400 error when an invalid query value is supplied', () => {
             return request(app)
-            .get('/api/articles?not_a_query')
+            .get('/api/articles?topic=not_a_query')
             .expect(400)
             .then((response) => {
                 expect(response.body.msg).toBe('bad request')
             })
         });
+        test('should return a 200 status and empty array when a valid topic is passed but has no articles assosciated to it', () => {
+            return request(app)
+            .get('/api/articles?topic=paper')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articles).toEqual([])
+            })
+        });
     });
-    
     describe('GET /api/articles/:article_id', () => {
-        test('should repsond with a status 200 and an object with the appropriate keys', () => {
+        test('should return a status 200 and an object with the appropriate keys', () => {
             return request(app)
             .get('/api/articles/3')
             .expect(200)
@@ -154,7 +161,7 @@ describe('APP', () => {
                 expect(response.body.article).toHaveProperty('article_img_url', expect.any(String))
         })
     });
-        test('should repsond with a 404 status when a valid but non-existent id is requested', () => {
+        test('should return a 404 status when a valid but non-existent id is requested', () => {
             return request(app)
             .get('/api/articles/99999')
             .expect(404)
@@ -162,7 +169,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('article does not exist')
             })
         });
-        test('should repsond with a 400 status when an invalid endpoint is requested', () => {
+        test('should return a 400 status when an invalid endpoint is requested', () => {
             return request(app)
             .get('/api/articles/not_an_article')
             .expect(400)
@@ -172,7 +179,7 @@ describe('APP', () => {
         });
     });
     describe('GET /api/articles/:article_id/comments', () => {
-        test('should repsond with a status 200 and an array of comments with the appropriate keys', () => {
+        test('should return a status 200 and an array of comments with the appropriate keys', () => {
             return request(app)
             .get("/api/articles/3/comments")
             .expect(200)
@@ -200,7 +207,7 @@ describe('APP', () => {
                 expect(response.body.comments).toBeSortedBy('created_at', {descending: true})
             })
         })
-        test('should respond with a 404 status when a valid but non-existent id is supplied', () => {
+        test('should return a 404 status when a valid but non-existent id is supplied', () => {
            return request(app)
             .get('/api/articles/99999/comments')
             .expect(404)
@@ -208,7 +215,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('article does not exist')
             })
         });
-        test('should respond with a 400 status when an invalid endpoint is supplied ', () => {
+        test('should return a 400 status when an invalid endpoint is supplied ', () => {
             return request(app)
             .get('/api/articles/not_a_number/comments')
             .expect(400)
@@ -268,7 +275,7 @@ describe('APP', () => {
                 expect(response.body.postedComment).toMatchObject(expectedResponse)
             })
         });
-        test('should respond with a 404 status and message when an article_id that is valid but does not exist is supplied', () => {
+        test('should return a 404 status and message when an article_id that is valid but does not exist is supplied', () => {
             const newComment = {
                 author: 'icellusedkars',
                 body: 'We will see about that!'
@@ -281,7 +288,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('does not exist')
             })
         });
-        test('should respond with a 400 status and message when an invalid article is requested', () => {
+        test('should return a 400 status and message when an invalid article is requested', () => {
             const newComment = {
                 author: 'icellusedkars',
                 body: 'We will see about that!'
@@ -294,7 +301,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('Bad request')
             })
         });
-        test('should respond with a 404 status and message when an invalid user is supplied ', () => {
+        test('should return a 404 status and message when an invalid user is supplied ', () => {
             const newComment = {
                 author: 'not_a_valid_user',
                 body: 'We will see about that!'
@@ -307,7 +314,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('does not exist')
             })
         });
-        test('should respond with a 400 status and message when a required field is not supplied', () => {
+        test('should return a 400 status and message when a required field is not supplied', () => {
             const newComment = {
                 author: 'icellusedkars'
             }
@@ -319,7 +326,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('Bad request')
             })
         });
-        test('should respond with a 400 status and message if an object with additional keys is supplied', () => {
+        test('should return a 400 status and message if an object with additional keys is supplied', () => {
             const newComment = {
                 author: 'icellusedkars',
                 body: 'We will see about that!',
@@ -335,7 +342,7 @@ describe('APP', () => {
         });
     });
     describe('PATCH /api/articles/:article_id', () => {
-        test('should respond with a 200 status along with an object of the updated article', () => {
+        test('should return a 200 status along with an object of the updated article', () => {
             const votesToPatch = {
                 inc_votes: 5
             }
@@ -357,7 +364,7 @@ describe('APP', () => {
                 expect(response.body.updated_article).toMatchObject(expectedResponse)
             })
         });
-        test('should respond with a 404 status and message when an article_id that is valid but does not exist is supplied', () => {
+        test('should return a 404 status and message when an article_id that is valid but does not exist is supplied', () => {
             const votesToPatch = {
                 inc_votes: 5
             }
@@ -369,7 +376,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('article does not exist')
             })
         });
-        test('should respond with a 400 status and message when an invalid article is requested', () => {
+        test('should return a 400 status and message when an invalid article is requested', () => {
             const votesToPatch = {
                 inc_votes: 5
             }
@@ -381,7 +388,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('Bad request')
             })
         });
-        test('should respond with a 400 status and message when a value for inc_votes that is not a number is supplied', () => {
+        test('should return a 400 status and message when a value for inc_votes that is not a number is supplied', () => {
             const votesToPatch = {
                 inc_votes: 5,
                 not_valid: "not valid"
@@ -394,7 +401,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('Bad request')
             })
         });
-        test('should respond with a 400 status and message if an object with additional keys is supplied', () => {
+        test('should return a 400 status and message if an object with additional keys is supplied', () => {
             const votesToPatch = {
                 inc_votes: 'not_a_number'
             }
@@ -408,12 +415,12 @@ describe('APP', () => {
         });
     });
     describe('DELETE /api/comments/:comment_id', () => {
-        test('should respond with a 204 status and delete the comment with requested id', () => {
+        test('should return a 204 status and delete the comment with requested id', () => {
             return request(app)
             .delete('/api/comments/7')
             .expect(204)
         });
-        test('should repsond with a 404 status when a valid but non-existent id is requested', () => {
+        test('should return a 404 status when a valid but non-existent id is requested', () => {
             return request(app)
             .delete('/api/comments/99999')
             .expect(404)
@@ -421,7 +428,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('comment does not exist')
             })
         });
-        test('should repsond with a 400 status when an invalid endpoint is requested', () => {
+        test('should return a 400 status when an invalid endpoint is requested', () => {
             return request(app)
             .delete('/api/comments/not_a_number')
             .expect(400)

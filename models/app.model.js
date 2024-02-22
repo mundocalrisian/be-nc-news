@@ -14,16 +14,13 @@ function selectAllTopics(){
         .then((results) => results.rows)
 }
 
-function selectAllArticles(topicQuery){
+function checkTopic(topic){
+    return db.query('SELECT * FROM topics WHERE slug = $1', [topic])
+    .then((result) => result.rows)
+}
 
-    const topicQueryKey = Object.keys(topicQuery)
-    
-    const validQueries = ['topic']
-
-    if (!validQueries.includes(topicQueryKey[0]) && topicQueryKey.length !== 0){
-        return Promise.reject({status: 400, msg: 'bad request'})
-    }
-    
+function selectAllArticles(topic){
+        
     const queryValues = []
     let sqlStr = `
     SELECT articles.article_id, articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, 
@@ -32,10 +29,10 @@ function selectAllArticles(topicQuery){
     RIGHT JOIN articles 
     ON comments.article_id = articles.article_id `
 
-    if(topicQueryKey[0] !== undefined) {
+    if (topic) {
         sqlStr += ` 
     WHERE topic = $1`
-        queryValues.push(topicQuery[topicQueryKey[0]])
+        queryValues.push(topic)
     }
 
     sqlStr += ` 
@@ -44,6 +41,9 @@ function selectAllArticles(topicQuery){
     
     return db.query(sqlStr, queryValues)
     .then((allArticles) => {
+        // if (allArticles.rows.length === 0){
+        //     return Promise.reject({status: 400, msg: 'bad request'})
+        // }
         allArticles.rows.forEach((article) => {
             article.comment_count = Number(article.comment_count)
         })
@@ -99,4 +99,4 @@ function updateArticleByArticleId(articleId, incVotes){
     })
 }
 
-module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId}
+module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId, checkTopic}
