@@ -55,18 +55,28 @@ function selectCommentsByArticleId(articleId){
 }
 
 function insertNewComment(articleId, newComment){
-    // console.log(articleId);
-    // console.log(newComment);
     return db.query(`
     INSERT INTO comments (article_id, author, body)
     VALUES ($1, $2, $3)
     RETURNING *;
     `, [articleId, newComment.author, newComment.body])
     .then((result) => {
-        // console.log(result.rows);
         return result.rows
     })
 
 }
 
-module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment}
+function updateArticleByArticleId(articleId, incVotes){
+    return db.query(`
+    UPDATE articles
+    SET votes = votes + $2
+    WHERE article_id = $1
+    RETURNING *;
+    `, [articleId, incVotes])
+    .then((result) => {
+        if (result.rows.length === 0) return Promise.reject({status: 404, msg: 'article does not exist'})
+        return result.rows[0]
+    })
+}
+
+module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId}
