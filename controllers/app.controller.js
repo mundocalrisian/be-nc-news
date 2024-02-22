@@ -1,4 +1,5 @@
-const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId} = require('../models/app.model.js')
+const { topicData } = require('../db/data/test-data/index.js')
+const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId, checkTopic} = require('../models/app.model.js')
 const {selectAllComments, deleteFromCommentId} = require('../models/comments.model.js')
 const {selectAllUsers} = require('../models/users.model.js')
 
@@ -30,19 +31,30 @@ function returnAllUsers(request, response, next){
     .catch(next)
 }
 
+function returnAllArticles(request, response, next){
+    const topic = request.query.topic
+    const promises = [selectAllArticles(topic)]
+    if (topic) promises.push(checkTopic(topic))
+    
+    Promise.all(promises).then((resolutions) => {
+        if (!resolutions[1]){
+            response.status(200).send({articles: resolutions[0]})
+        } else {
+            if (resolutions[1].length === 0){   
+                response.status(400).send({msg: 'bad request'})
+            } else {
+                response.status(200).send({articles: resolutions[0]})
+            }
+        }
+    })
+    .catch(next)
+}
+
 function returnArticleById(request, response, next){
     const articleId = request.params.article_id
     selectArticleById(articleId)
     .then((articleObj) => {
         response.status(200).send({article: articleObj})
-    })
-    .catch(next)
-}
-
-function returnAllArticles(request, response, next){
-    selectAllArticles()
-    .then((allComments) => {
-        response.status(200).send({articles: allComments})
     })
     .catch(next)
 }

@@ -13,9 +13,9 @@ app.get('/api/topics', returnAllTopics)
 
 app.get('/api/users', returnAllUsers)
 
-app.get('/api/articles/:article_id', returnArticleById)
-
 app.get('/api/articles', returnAllArticles)
+
+app.get('/api/articles/:article_id', returnArticleById)
 
 app.get('/api/articles/:article_id/comments', returnCommentsByArticleId)
 
