@@ -47,7 +47,7 @@ function returnAllArticles(request, response, next){
             const promises = [selectAllArticles(topic), checkTopic(topic)]
             Promise.all(promises).then((resolutions) => {
                     if (resolutions[1].length === 0){   
-                        response.status(400).send({msg: 'bad request'})
+                        response.status(404).send({msg: 'topic not found'})
                     } else {
                         response.status(200).send({articles: resolutions[0]})
                     }

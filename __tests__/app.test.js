@@ -136,12 +136,12 @@ describe('APP', () => {
                 expect(response.body.articles).toEqual([])
             })
         });
-        test('should return a 400 error when an invalid topic query value is supplied', () => {
+        test('should return a 404 error when an invalid topic query value is supplied', () => {
             return request(app)
             .get('/api/articles?topic=not_a_value')
-            .expect(400)
+            .expect(404)
             .then((response) => {
-                expect(response.body.msg).toBe('bad request')
+                expect(response.body.msg).toBe('topic not found')
             })
         });
         test('should return a 400 error when an invalid topic query value is supplied', () => {
