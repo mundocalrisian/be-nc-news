@@ -138,7 +138,7 @@ describe('APP', () => {
         });
         test('should return a 400 error when an invalid topic query value is supplied', () => {
             return request(app)
-            .get('/api/articles?topic=not_a_query')
+            .get('/api/articles?topic=not_a_value')
             .expect(400)
             .then((response) => {
                 expect(response.body.msg).toBe('bad request')
@@ -146,7 +146,7 @@ describe('APP', () => {
         });
         test('should return a 400 error when an invalid topic query value is supplied', () => {
             return request(app)
-            .get('/api/articles?not_a_query=not_a_value')
+            .get('/api/articles?not_a_query=cats')
             .expect(400)
             .then((response) => {
                 expect(response.body.msg).toBe('bad request')
@@ -167,6 +167,7 @@ describe('APP', () => {
                 expect(response.body.article).toHaveProperty('created_at', expect.any(String))
                 expect(response.body.article).toHaveProperty('votes', expect.any(Number))
                 expect(response.body.article).toHaveProperty('article_img_url', expect.any(String))
+                expect(response.body.article).toHaveProperty('comment_count', expect.any(Number))
         })
     });
         test('should return a 404 status when a valid but non-existent id is requested', () => {

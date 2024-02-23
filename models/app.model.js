@@ -50,10 +50,16 @@ function selectAllArticles(topic){
 
 function selectArticleById(articleId){
     return db.query(`
-    SELECT * FROM articles
-    WHERE article_id = $1`, [articleId])
+    SELECT articles.article_id, articles.author, articles.title, articles.body, articles.topic, articles.created_at, articles.votes, articles.article_img_url,
+    COUNT (comments.body) AS comment_count
+    FROM comments
+    RIGHT JOIN articles
+    ON comments.article_id = articles.article_id
+    WHERE articles.article_id = $1
+    GROUP BY articles.article_id;`, [articleId])
     .then((result) => {
         if (result.rows.length === 0) return Promise.reject({status: 404, msg: 'article does not exist'})
+        result.rows[0].comment_count = Number(result.rows[0].comment_count)
         return result.rows[0]})
 }
 

@@ -40,6 +40,7 @@ function returnAllArticles(request, response, next){
             selectAllArticles().then((result) => {
                 response.status(200).send({articles: result})
             })
+            .catch(next)
             break;
         case 'topic':
             const topic = request.query.topic
@@ -51,6 +52,7 @@ function returnAllArticles(request, response, next){
                         response.status(200).send({articles: resolutions[0]})
                     }
                 })
+                .catch(next)
             break;
         default:
             response.status(400).send({msg: 'bad request'})
