@@ -123,6 +123,11 @@
       }
     }
   },
+  "DELETE /api/articles/:article_id": {
+    "description": "deletes the article with requested id",
+    "queries": [],
+    "exampleResponse": {"Status": 204}
+  },
   "DELETE /api/comments/:comment_id": {
     "description": "deletes the comment with requested id",
     "queries": [],

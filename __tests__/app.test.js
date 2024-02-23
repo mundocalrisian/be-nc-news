@@ -446,6 +446,29 @@ describe('APP', () => {
             })
         });
     });
+    describe('DELETE /api/articles/:article_id', () => {
+        test('should return a 204 status and delete the comment with the requested id', () => {
+            return request(app)
+            .delete('/api/articles/7')
+            .expect(204)
+        });
+        test('should return a 404 status when a valid but non-existent id is requested', () => {
+            return request(app)
+            .delete('/api/articles/99999')
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe('article does not exist')
+            })
+        });
+        test('should return a ', () => {
+            return request(app)
+            .delete('/api/articles/not_a_number')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad request')
+            }) 
+        });
+    });
     describe('DELETE /api/comments/:comment_id', () => {
         test('should return a 204 status and delete the comment with requested id', () => {
             return request(app)

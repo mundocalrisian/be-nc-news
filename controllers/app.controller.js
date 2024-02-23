@@ -1,5 +1,5 @@
 const { topicData } = require('../db/data/test-data/index.js')
-const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId, checkTopic} = require('../models/app.model.js')
+const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId, checkTopic, deleteFromArticleId} = require('../models/app.model.js')
 const {selectAllComments, deleteFromCommentId} = require('../models/comments.model.js')
 const {selectAllUsers, selectUserByUsername} = require('../models/users.model.js')
 
@@ -126,9 +126,17 @@ function patchArticleByArticleId(request, response, next){
     
 }
 
+function deleteArticleByArticleId(request, response, next){
+    const articleId = request.params.article_id
+    deleteFromArticleId(articleId)
+    .then((deletedArticle) => {
+        response.status(204).send()
+    })
+    .catch(next)
+}
+
 function deleteCommentByCommentId(request, response, next){
     const commentId = request.params.comment_id
-    
     deleteFromCommentId(commentId)
     .then((deletedComment) => {
         response.status(204).send()
@@ -137,4 +145,4 @@ function deleteCommentByCommentId(request, response, next){
 }
 
 
-module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId, deleteCommentByCommentId, returnAllUsers, returnUserByUsername}
+module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId, deleteCommentByCommentId, returnAllUsers, returnUserByUsername, deleteArticleByArticleId}

@@ -98,4 +98,18 @@ function updateArticleByArticleId(articleId, incVotes){
     })
 }
 
-module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId, checkTopic}
+function deleteFromArticleId(articleId){
+    return db.query(`
+    DELETE FROM articles
+    WHERE article_id = $1
+    RETURNING *
+    `, [articleId])
+    .then((result) => {
+        if (result.rows.length === 0) {
+            return Promise.reject({status: 404, msg: 'article does not exist'})
+        }
+        return result.rows
+    })
+}
+
+module.exports = {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId, checkTopic, deleteFromArticleId}

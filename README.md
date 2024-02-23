@@ -58,6 +58,9 @@ and to then seed each database
 **`PATCH /api/articles/:article_id`**
 - increases the votes assosciated with the requsted id and serves an object of the updated article
 
+**`DELETE /api/articles/:article_id/`**
+- deletes the article with requested id
+
 **`DELETE /api/comments/:comment_id/`**
 - deletes the comment with requested id
 

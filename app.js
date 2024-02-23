@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId, deleteCommentByCommentId, returnAllUsers, returnUserByUsername} = require('./controllers/app.controller.js')
+const {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId, deleteCommentByCommentId, returnAllUsers, returnUserByUsername, deleteArticleByArticleId} = require('./controllers/app.controller.js')
 const {handleInvalidEndpoint, handlePsqlErrors, handleCustomErrors, handle500Errors} = require('./controllers/errors.controller.js')
 
 app.use(express.json());
@@ -24,6 +24,8 @@ app.get('/api/articles/:article_id/comments', returnCommentsByArticleId)
 app.post('/api/articles/:article_id/comments', postCommentByArticleId)
 
 app.patch('/api/articles/:article_id', patchArticleByArticleId)
+
+app.delete('/api/articles/:article_id', deleteArticleByArticleId)
 
 app.delete('/api/comments/:comment_id', deleteCommentByCommentId)
 
