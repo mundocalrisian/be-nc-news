@@ -60,7 +60,8 @@ and to then seed each database
 
 ## Technologies Used
 
--   NodeJS - https://nodejs.org/en
+-   NodeJS - https://nodejs.org/en (minimum version 20.10.0)
+-   PostgreSQL - https://www.postgresql.org/ (minimum version 16.2)
 -   Express - https://expressjs.com/
 -   npm - https://www.npmjs.com/
 -   jest - https://jestjs.io/
