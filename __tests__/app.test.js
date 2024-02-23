@@ -82,6 +82,29 @@ describe('APP', () => {
             })
         });
     });
+    describe('GET /api/users/:username', () => {
+        test('should return a status 200 and an object with the appropriate keys', () => {
+            return request(app)
+            .get('/api/users/icellusedkars')
+            .expect(200)
+            .then((response) => {
+                expect(response.body).toHaveProperty('user')
+                const expectedObject = {
+                    username: 'icellusedkars',
+                    name: 'sam',
+                    avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4'}
+                expect(response.body.user).toMatchObject(expectedObject)
+            })
+            })
+        test('should return a 404 status and message when an invalid user is supplied', () => {
+            return request(app)
+            .get('/api/users/not_a_user')
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe('user does not exist')
+            })
+        });
+        });
     describe('GET /api/articles', () => {
         test('should return a 200 status and an array of article objects with the appropriate keys', () => {
             return request(app)

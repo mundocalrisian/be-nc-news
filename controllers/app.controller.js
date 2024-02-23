@@ -1,7 +1,7 @@
 const { topicData } = require('../db/data/test-data/index.js')
 const {selectAllTopics, selectEndpoints, selectArticleById, selectAllArticles, selectCommentsByArticleId, insertNewComment, updateArticleByArticleId, checkTopic} = require('../models/app.model.js')
 const {selectAllComments, deleteFromCommentId} = require('../models/comments.model.js')
-const {selectAllUsers} = require('../models/users.model.js')
+const {selectAllUsers, selectUserByUsername} = require('../models/users.model.js')
 
 function returnHealthcheck(request, response){
     response.status(200).send({msg: 'Healthcheck ok'})
@@ -27,6 +27,15 @@ function returnAllUsers(request, response, next){
     selectAllUsers()
     .then((usersArray) => {
         response.status(200).send({users: usersArray})
+    })
+    .catch(next)
+}
+
+function returnUserByUsername(request, response, next){
+    const username = request.params.username
+    selectUserByUsername(username)
+    .then((user) => {
+        response.status(200).send({user: user})
     })
     .catch(next)
 }
@@ -128,4 +137,4 @@ function deleteCommentByCommentId(request, response, next){
 }
 
 
-module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId, deleteCommentByCommentId, returnAllUsers}
+module.exports = {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId, deleteCommentByCommentId, returnAllUsers, returnUserByUsername}

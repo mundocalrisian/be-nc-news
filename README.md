@@ -40,6 +40,9 @@ and to then seed each database
 **`GET /api/users`**
 - serves an array of all users
 
+**`GET /api/users/:username`**
+- serves an object of the user with requested username
+
 **`GET /api/articles`**
 - serves an array of all articles
 
