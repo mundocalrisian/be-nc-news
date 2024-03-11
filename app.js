@@ -1,8 +1,10 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 const {returnHealthcheck, returnAllEndpoints, returnAllTopics, returnArticleById, returnAllArticles, returnCommentsByArticleId, postCommentByArticleId, patchArticleByArticleId, deleteCommentByCommentId, returnAllUsers, returnUserByUsername, deleteArticleByArticleId} = require('./controllers/app.controller.js')
 const {handleInvalidEndpoint, handlePsqlErrors, handleCustomErrors, handle500Errors} = require('./controllers/errors.controller.js')
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/api/healthcheck', returnHealthcheck)
