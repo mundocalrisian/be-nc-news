@@ -63,8 +63,6 @@ function selectCommentsByArticleId(articleId){
     return db.query(`
     SELECT *
     FROM comments
-    JOIN articles
-    ON comments.article_id = articles.article_id
     WHERE comments.article_id = $1
     ORDER BY comments.created_at DESC;
     `, [articleId])
