@@ -420,7 +420,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('Bad request')
             })
         });
-        test('should return a 400 status and message when a value for inc_votes that is not a number is supplied', () => {
+        test('should return a 400 status and message if an object with additional keys is supplied', () => {
             const votesToPatch = {
                 inc_votes: 5,
                 not_valid: "not valid"
@@ -433,7 +433,7 @@ describe('APP', () => {
                 expect(response.body.msg).toBe('Bad request')
             })
         });
-        test('should return a 400 status and message if an object with additional keys is supplied', () => {
+        test('should return a 400 status and message when a value for inc_votes that is not a number is supplied', () => {
             const votesToPatch = {
                 inc_votes: 'not_a_number'
             }

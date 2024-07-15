@@ -8,7 +8,7 @@
       "queries": [],
       "exampleResponse": {
         "topics": [{ "slug": "football", "description": "Footie!" }]
-      }
+        }
       }
     }
   },
@@ -91,7 +91,7 @@
     },
     "queries": [],
     "exampleResponse": {
-      "comment": {
+      "postedComment": {
         "comment_id": 19, 
         "body": "We will see about that!",
         "article_id": 13,

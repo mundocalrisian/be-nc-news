@@ -1,4 +1,3 @@
-const { log } = require('console')
 const db = require('../db/connection.js')
 const fs = require('fs/promises')
 
