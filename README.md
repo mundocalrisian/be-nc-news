@@ -10,7 +10,7 @@ A hosted version of this API can be found at https://nc-news-b3bj.onrender.com/a
 
 To start using this project, please first clone the repository from GitHub using the following command
 
-    git clone https://github.com/mundocalrisian/nc-news.git
+    git clone https://github.com/mundocalrisian/be-nc-news.git
 
 Next you'll need to install the dependencies using 
 
