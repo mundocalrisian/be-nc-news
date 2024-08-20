@@ -2,9 +2,17 @@
 
 ### Welcome to NC News! ###
 
-NC News is an API written in JavaScript that uses PostgreSQL databases to interacts with articles, comments, topics and users from various endpoints.
+NC News is an API written in JavaScript that uses PostgreSQL databases to interact with articles, comments, topics and users from various endpoints.
 
-A hosted version of this API can be found at https://nc-news-b3bj.onrender.com/api
+A hosted version of this API can be found at - 
+
+https://nc-news-b3bj.onrender.com/api
+
+Additionally, a web application utilising this API can be seen here - 
+
+https://mundo-news.netlify.app/
+
+*Please note - on connecting for the first time, you may notice a bit of a delay in the articles and topics loading. This is normal whilst the instance spins up having not been used for a while and is a limitation of the free tier from [Render](https://render.com/).*
 
 ## Install
 
