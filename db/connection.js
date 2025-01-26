@@ -10,16 +10,8 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
 const config = {}
 
 if (ENV === 'production'){
-  const aivemSslCaPath = process.env.AIVEM_PEM_PATH
-  
   config.connectionString  = process.env.DATABASE_URL;
   config.max = 2;
-  config.ssl = {
-    require: true,
-    rejectUnauthorized: false,
-    ca: fs.readFileSync(aivemSslCaPath).toString()
-  };
-  console.log(config)
 }
 
 module.exports = new Pool(config);
