@@ -3,4 +3,6 @@ node_modules
 sql_files
 /__tests__/model.test.js
 nc_news_ERD.png
+/db/certs
+
 
