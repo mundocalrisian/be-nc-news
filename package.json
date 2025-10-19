@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/northcoders/be-nc-news#readme",
   "devDependencies": {
-    "jest": "^27.5.1",
+    "jest": "^30.2.0",
     "jest-extended": "^2.0.0",
     "jest-sorted": "^1.0.15",
     "pg-format": "^1.0.4",
